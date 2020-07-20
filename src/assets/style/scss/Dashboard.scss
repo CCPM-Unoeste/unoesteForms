@@ -1,0 +1,73 @@
+main.dashboard {
+    padding: 4.75rem 0 1rem;
+    align-items: flex-start;
+
+    nav {
+        width: 20rem;
+        padding: 0.5em;
+        margin-right: 1rem;
+        border: 0.5px solid #eff0f1;
+
+        .user {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 4rem 1fr;
+            gap: 0.5rem;
+
+            .user-pic {
+                height: 4rem;
+                width: 4rem;
+                border: 1px solid black;
+
+                img {
+                    height: 100%;
+                    width: 100%;
+                    object-fit: cover;
+                }
+            }
+
+            .user-info {
+                h1,
+                p {
+                    margin: 0;
+                }
+
+                p {
+                    word-break: normal;
+                    text-overflow: ellipsis;
+                    width: 90%;
+                    overflow: hidden;
+                }
+            }
+        }
+
+        .sub-info {
+            width: 100%;
+            margin-top: 1rem;
+            display: grid;
+
+            button {
+                text-align: left;
+                background: none;
+                padding: 0;
+                border: none;
+                outline: none;
+                cursor: pointer;
+
+                &:hover,
+                &:focus {
+                    text-decoration: underline;
+                }
+
+                &:not(:last-child) {
+                    margin-bottom: 0.5rem;
+                }
+            }
+        }
+    }
+
+    article {
+        height: 100%;
+        flex-grow: 1;
+    }
+}

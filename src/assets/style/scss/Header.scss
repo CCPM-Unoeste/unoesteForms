@@ -1,0 +1,47 @@
+@import "__variables";
+
+header {
+    background-color: $nav-background;
+    height: 3.75rem;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    display: flex;
+    align-items: center;
+    z-index: 3;
+
+    nav {
+        height: 100%;
+        width: 70%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .brand {
+            height: 100%;
+            width: 6.25rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img,
+            svg {
+                object-fit: contain;
+            }
+        }
+
+        .help {
+            font-size: 2.5rem;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+    }
+}

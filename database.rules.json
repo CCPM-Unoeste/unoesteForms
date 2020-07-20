@@ -1,0 +1,14 @@
+{
+  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+  "rules": {
+    "users":{
+      ".indexOn":["email"],
+      ".read": true,
+    	".write": true
+    },
+    "lives":{
+      ".read": true,
+    	".write": true
+    }
+  }
+}
