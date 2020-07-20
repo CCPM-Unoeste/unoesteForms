@@ -23,7 +23,7 @@
             }
         }
 
-        select{
+        select {
             width: 100%;
         }
 
@@ -72,6 +72,16 @@
         }
         100% {
             transform: rotate(360deg);
+        }
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .create-forms {
+        form {
+            .grid {
+                grid-template-columns: 1fr;
+            }
         }
     }
 }

@@ -86,3 +86,13 @@
         }
     }
 }
+
+@media screen and (max-width: 900px) {
+    .form{
+        section.forms{
+            form{
+                width: 100%;
+            }
+        }
+    }
+}

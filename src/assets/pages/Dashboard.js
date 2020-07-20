@@ -29,6 +29,10 @@ class Dashboard extends React.Component {
     }
 
     componentDidMount = () => {
+        if(!auth().currentUser.emailVerified){
+            auth().currentUser.sendEmailVerification();
+        }
+
         retrieveUser(auth().currentUser.email).then(result => {
             this.setState({ user: { name: result.name, email: auth().currentUser.email, avatar: 'https://randomuser.me/api/portraits/' + (Math.floor(Math.random() * (3 - 1)) + 1 === 1 ? 'women' : 'men') + '/' + (Math.floor(Math.random() * 99)) + '.jpg' }, app: <ManageForms name={result.name} /> });
         });

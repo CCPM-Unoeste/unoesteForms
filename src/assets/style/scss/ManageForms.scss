@@ -40,19 +40,19 @@
         border-top: none;
         display: grid;
 
-        &.active-forms{
-            button{
+        &.active-forms {
+            button {
                 background-color: transparent;
                 border: none;
                 cursor: pointer;
 
-                &.cancel-button{
+                &.cancel-button {
                     border: 1px solid #eff0f1;
                     margin-top: 1em;
                 }
             }
 
-            i{
+            i {
                 font-size: 1em;
                 line-height: 1;
             }
@@ -72,6 +72,28 @@
                 font-size: 0.9rem;
                 border: 1px solid #eff0f1;
                 border-radius: 0;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .manage-forms {
+        margin-top: 1rem;
+
+        .table-wrapper {
+            table {
+                width: 200%;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .manage-forms {
+        .table-wrapper {
+            table {
+                width: 300%;
             }
         }
     }

@@ -1,27 +1,29 @@
-.login,.register-user{
+.login,
+.register-user {
     height: 100vh;
 
-    .lx-card{
+    .lx-card {
         border: 0.5px solid #eff0f1;
-    
-        h1{
+
+        h1 {
             text-align: center;
         }
-    
-        input.lx-btn{
+
+        input.lx-btn {
             line-height: 1.3;
             width: fit-content;
         }
-    
-        .lx-btn,.help{
+
+        .lx-btn,
+        .help {
             cursor: pointer;
         }
-    
-        .lx-row.is-between{
+
+        .lx-row.is-between {
             margin-top: 3.5em;
         }
-    
-        .help{
+
+        .help {
             font-size: 0.85rem;
             text-decoration: underline;
             background-color: transparent;
@@ -30,6 +32,17 @@
             border: none;
             outline: none;
             display: inline-block;
+        }
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .login,
+    .register-user {
+        .lx-card {
+            .lx-row.is-between {
+                flex-flow: wrap row;
+            }
         }
     }
 }

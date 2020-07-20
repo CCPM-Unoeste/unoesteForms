@@ -71,3 +71,11 @@ main.dashboard {
         flex-grow: 1;
     }
 }
+
+@media screen and (max-width: 900px) {
+    main.dashboard{
+        nav{
+            width: 100%;
+        }
+    }
+}
