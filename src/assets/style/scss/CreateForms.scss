@@ -40,6 +40,11 @@
             grid-template-columns: 1fr 1fr;
             gap: 1em;
         }
+
+        .success{
+            color: green;
+            font-weight: bolder;
+        }
     }
 
     .wrapper-loader {

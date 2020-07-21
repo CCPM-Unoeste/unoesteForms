@@ -22,7 +22,8 @@ class CreateForms extends React.Component {
             creation: '',
             user: '',
             key: '',
-            loading: false
+            loading: false,
+            done: false
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -35,10 +36,12 @@ class CreateForms extends React.Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
+    // The date needs special treatment
     handleDateChange = e => {
         this.setState({ [e.target.name]: new Date(e.target.value).toISOString() });
     }
 
+    // Converts the image to a dataURL
     handleImageChange = () => {
         let fr = new FileReader();
         try {
@@ -59,12 +62,9 @@ class CreateForms extends React.Component {
         } else {
             this.setState({ creation: new Date(Date.now()).toISOString() });
 
+            // Calls the function to record lives data and sets the key on the component's state
             recordData('lives', { title: this.state.title, lecturer: this.state.lecturer, credential: this.state.credential, course: this.state.course, level: this.state.level, expiration: this.state.expiration, beginning: this.state.beginning, duration: this.state.duration, link: this.state.link, promotion: this.state.promotion, partnership: this.state.partners, user: this.state.user, creation: new Date(Date.now()).toISOString() }).then(result => {
-                console.log(result);
                 this.setState({ key: result });
-
-                document.querySelectorAll('form').forEach(elem => elem.classList.toggle('disabled'));
-                this.disableInput();
             }).then(() => {
                 if (this.state.banner === '') {
                     this.toast('Por favor, informe uma imagem.');
@@ -72,9 +72,8 @@ class CreateForms extends React.Component {
                     this.setState({ loading: true });
 
                     try {
-                        recordImage('lives/' + this.state.key + '.jpg', this.state.banner).on('state_changed', snap => {
-                            console.log(snap.bytesTransferred / snap.totalBytes * 100 + '%');
-                        }, error => {
+                        // Calls the function to record the image
+                        recordImage('lives/' + this.state.key + '.jpg', this.state.banner).on('state_changed', snap => { }, error => {
                             this.setState({ loading: false });
                             switch (error.code) {
                                 case 'storage/canceled':
@@ -92,7 +91,9 @@ class CreateForms extends React.Component {
 
                             removeData('lives', this.state.key);
                         }, () => {
-                            this.setState({ loading: false });
+                            // On success, resets the form
+                            this.setState({ loading: false, done: true });
+                            document.querySelector('form').reset();
                         });
                     } catch (error) {
                         this.toast('Ocorreu um erro. Por favor, tente novamente mais tarde.<br/><br/>' + error);
@@ -176,6 +177,8 @@ class CreateForms extends React.Component {
                     </div>
 
                     <input type="submit" value="Enviar" />
+
+                    {this.state.done ? <p className="success">Alterado</p> : null}
                 </form>
 
                 {this.state.loading ? <div className="wrapper-loader"><div className="loader"></div></div> : null}

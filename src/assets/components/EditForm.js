@@ -21,10 +21,12 @@ class EditForm extends React.Component {
             creation: '',
             user: '',
             key: props.live,
-            loading: false
+            loading: false,
+            done: false
         }
     }
 
+    // When the component finishes mounting, retrieves both data and banner and sets it to the component's state
     componentDidMount = () => {
         retrieveData(this.state.key).then(live => {
             retrieveDownloadURL('lives/' + this.state.key + '.jpg').then(url => {
@@ -125,49 +127,47 @@ class EditForm extends React.Component {
         if (this.state.title === '' || this.state.link === '' || this.state.expiration === '' || this.state.partners === '' || this.state.course === '' || this.state.lecturer === '' || this.state.credential === '') {
             this.toast('Por favor, preencha todos os campos do formulário');
         } else {
-            updateData('lives/' + this.state.key, { title: this.state.title, lecturer: this.state.lecturer, credential: this.state.credential, course: this.state.course, level: this.state.level, expiration: this.state.expiration, beginning: this.state.beginning, duration: this.state.duration, link: this.state.link, promotion: this.state.promotion, partnership: this.state.partners, user: this.state.user, creation: this.state.creation }).catch(() => {
+            // Update the record on the provided key
+            updateData('lives/' + this.state.key, { title: this.state.title, lecturer: this.state.lecturer, credential: this.state.credential, course: this.state.course, level: this.state.level, expiration: this.state.expiration, beginning: this.state.beginning, duration: this.state.duration, link: this.state.link, promotion: this.state.promotion, partnership: this.state.partners, user: this.state.user, creation: this.state.creation }).then(() => {
+                // If the banner has changed...
+                if (!this.state.banner.includes('http')) {
+                    this.setState({ loading: true });
+
+                    try {
+                        recordImage('lives/' + this.state.key + '.jpg', this.state.banner).on('state_changed', snap => {
+                            console.log(snap.bytesTransferred / snap.totalBytes * 100 + '%');
+                        }, error => {
+                            this.setState({ loading: false });
+                            switch (error.code) {
+                                case 'storage/canceled':
+                                    this.toast('Operação cancelada.');
+                                    break;
+                                case 'storage/retry-limit-exceeded':
+                                    this.toast('Tempo limite atingido. Por favor, tente novamente mais tarde.');
+                                    break;
+                                case 'storage/quota-exceeded':
+                                    this.toast('Limite do Firebase excedido. Nenhum upload de imagem será permitido.');
+                                    break;
+                                default:
+                                    this.toast('Ocorreu um erro. Por favor, tente novamente mais tarde.');
+                            }
+
+                            removeData('lives', this.state.key);
+                        }, () => {
+                            this.setState({ loading: false });
+                        });
+                    } catch (error) {
+                        this.toast('Ocorreu um erro. Por favor, tente novamente mais tarde.<br/><br/>' + error);
+                        this.setState({ loading: false });
+
+                        removeData('lives', this.state.key);
+                    }
+                }
+            }).then(() => {
+                this.setState({ done: true });
+            }).catch(() => {
                 this.toast('Ocorreu um erro ao processar seu pedido. Por favor, tente novamente mais tarde.<br/><br/>');
             });
-        }
-    }
-
-    handleSubmitImage = e => {
-        e.preventDefault();
-
-        if (this.state.banner === '') {
-            this.toast('Por favor, informe uma imagem.');
-        } else {
-            this.setState({ loading: true });
-
-            try {
-                recordImage('lives/' + this.state.key + '.jpg', this.state.banner).on('state_changed', snap => {
-                    console.log(snap.bytesTransferred / snap.totalBytes * 100 + '%');
-                }, error => {
-                    this.setState({ loading: false });
-                    switch (error.code) {
-                        case 'storage/canceled':
-                            this.toast('Operação cancelada.');
-                            break;
-                        case 'storage/retry-limit-exceeded':
-                            this.toast('Tempo limite atingido. Por favor, tente novamente mais tarde.');
-                            break;
-                        case 'storage/quota-exceeded':
-                            this.toast('Limite do Firebase excedido. Nenhum upload de imagem será permitido.');
-                            break;
-                        default:
-                            this.toast('Ocorreu um erro. Por favor, tente novamente mais tarde.');
-                    }
-
-                    removeData('lives', this.state.key);
-                }, () => {
-                    this.setState({ loading: false });
-                });
-            } catch (error) {
-                this.toast('Ocorreu um erro. Por favor, tente novamente mais tarde.<br/><br/>' + error);
-                this.setState({ loading: false });
-
-                removeData('lives', this.state.key);
-            }
         }
     }
 
@@ -232,10 +232,14 @@ class EditForm extends React.Component {
                         <div>
                             <label htmlFor="banner">Banner</label>
                             <input type="file" name="banner" accept="image/jpg,image/jpeg" onChange={this.handleImageChange} />
+
+                            <img id="image" src={this.state.banner} alt="" hidden />
                         </div>
                     </div>
 
                     <input type="submit" value="Enviar" />
+
+                    {this.state.done ? <p className="success">Alterado</p> : null}
                 </form>
 
                 {this.state.loading ? <div className="wrapper-loader"><div className="loader"></div></div> : null}

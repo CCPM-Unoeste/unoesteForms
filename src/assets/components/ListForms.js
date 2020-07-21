@@ -14,24 +14,29 @@ class ListForms extends React.Component {
         }
     }
 
+    // Retrieve lives' data and puts it on an array
     componentDidMount() {
         retrieveLives(this.props.name).then(result => this.setState({ activeForms: result })).catch(error => this.setState({ error }));
     }
 
+    // Retrieve the live to edit and sets the EditForms component
     handleEdit = e => {
         this.setState({ editForms: <EditForms live={e.target.dataset.key} /> })
     }
 
+    // Retrieve the live to delete
     handleDelete = e => {
         let key = e.target.dataset.key;
-        removeImage('lives/' + key + '.jpg').then(() => {
-            removeData('lives', key).then(() => {
-                let array = this.state.activeForms;
-                array.splice(array.findIndex(elem => elem.key = key), 1);
-                this.setState({ activeForms: array })
-            }).catch(error => {
+
+        removeImage('lives/' + key + '.jpg').catch(error => {
+            if (error.code !== 'storage/object-not-found')
                 console.log(error);
-            });
+        });
+
+        removeData('lives', key).then(() => {
+            let array = this.state.activeForms;
+            array.splice(array.findIndex(elem => elem.key = key), 1);
+            this.setState({ activeForms: array, editForms: false });
         }).catch(error => {
             console.log(error);
         });
@@ -41,6 +46,7 @@ class ListForms extends React.Component {
         this.setState({ editForms: null, live: '' });
     }
 
+    // Iterates through the array to mount the table
     loadForms = () => {
         return this.state.activeForms.length > 0 ? this.state.activeForms.map(elem => {
             let level = '';
@@ -58,7 +64,7 @@ class ListForms extends React.Component {
             }
             return (
                 <tr id={elem.key} key={elem.key}>
-                    <td><a href={window.location.href + 'forms/' + elem.key} target="_blank" rel="noopener noreferrer">{elem.value.title}</a></td>
+                    <td><a href={window.location.href + 'forms/' + elem.key} target="_blank" rel="noopener noreferrer"><u>{elem.value.title}</u></a></td>
                     <td>{elem.value.creation.replace(elem.value.creation.substring(elem.value.creation.indexOf('T'), elem.value.creation.length), '')}</td>
                     <td>{elem.value.expiration.replace(elem.value.expiration.substring(elem.value.expiration.indexOf('T'), elem.value.expiration.length), '')}</td>
                     <td>{elem.value.duration}</td>
@@ -93,7 +99,7 @@ class ListForms extends React.Component {
                             {this.state.activeForms.length === 0 ?
                                 <tr>
                                     <td colSpan="9">
-                                        {this.state.error ? this.state.error : 'Não há dados a serem exibidos'}
+                                        {this.state.error ? this.state.error : 'Não há formulários cadastrados para este usuário'}
                                     </td>
                                 </tr>
                                 : this.loadForms()

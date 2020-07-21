@@ -53,6 +53,7 @@ class FormOther extends React.Component {
             body: JSON.stringify(data)
         }
 
+        // Calls the API with the applicant's data
         fetch('https://unoesteforms.herokuapp.com/sendMail', config).then(result => {
             console.log(result);
         })
